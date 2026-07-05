@@ -1,0 +1,26 @@
+{
+  "name": "persona-assignment",
+  "version": "1.0.0",
+  "description": "Hitesh Choudhary persona AI agent (Hinglish) with YouTube tools",
+  "type": "module",
+  "private": true,
+  "main": "src/agent.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "server": "node src/server.js",
+    "chat": "node src/cli.js",
+    "ask": "node src/cli.js"
+  },
+  "keywords": ["genai", "persona", "hitesh-choudhary", "agent"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "openai": "^6.45.0"
+  }
+}
