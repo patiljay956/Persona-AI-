@@ -25,7 +25,6 @@ services:
     staticPublishPath: ./dist
     envVars:
       # Render has no dynamic public-URL reference, so this is hardcoded.
-      # Must match persona-api's actual onrender.com URL — fix after first deploy
-      # if Render assigned a different subdomain (name was taken).
+      # Must match persona-api's actual onrender.com URL shown in the dashboard.
       - key: VITE_API_URL
-        value: https://persona-api.onrender.com
+        value: https://persona-api-vkw5.onrender.com
