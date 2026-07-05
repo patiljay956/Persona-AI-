@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { BotIcon, SendIcon, UserIcon, WrenchIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { BotIcon, MoonIcon, SendIcon, SunIcon, UserIcon, WrenchIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
@@ -44,6 +44,21 @@ function HiteshAvatar() {
       </AvatarFallback>
     </Avatar>
   )
+}
+
+function useDarkMode() {
+  const [dark, setDark] = useState(() => {
+    const stored = localStorage.getItem("theme")
+    if (stored) return stored === "dark"
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+  })
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark)
+    localStorage.setItem("theme", dark ? "dark" : "light")
+  }, [dark])
+
+  return [dark, setDark] as const
 }
 
 const WELCOME: ChatMsg = {
@@ -111,6 +126,7 @@ function TypingBubble() {
 }
 
 function App() {
+  const [dark, setDark] = useDarkMode()
   const [messages, setMessages] = useState<ChatMsg[]>([WELCOME])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
@@ -148,10 +164,19 @@ function App() {
     <div className="mx-auto flex h-svh max-w-2xl flex-col">
       <header className="flex items-center gap-3 border-b border-border px-4 py-3">
         <HiteshAvatar />
-        <div>
+        <div className="flex-1">
           <p className="text-sm font-medium">Hitesh — Persona Agent</p>
           <p className="text-xs text-muted-foreground">Chai aur Code</p>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label="Toggle dark mode"
+          onClick={() => setDark((d) => !d)}
+        >
+          {dark ? <SunIcon /> : <MoonIcon />}
+        </Button>
       </header>
 
       <MessageScrollerProvider autoScroll defaultScrollPosition="end">
