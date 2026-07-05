@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { BotIcon, SendIcon, UserIcon, WrenchIcon } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,6 +33,18 @@ type ChatMsg = {
 }
 
 const SESSION_ID = crypto.randomUUID()
+const HITESH_AVATAR = "https://avatars.githubusercontent.com/u/11613311?v=4"
+
+function HiteshAvatar() {
+  return (
+    <Avatar>
+      <AvatarImage src={HITESH_AVATAR} alt="Hitesh" />
+      <AvatarFallback>
+        <BotIcon className="size-4" />
+      </AvatarFallback>
+    </Avatar>
+  )
+}
 
 const WELCOME: ChatMsg = {
   id: "welcome",
@@ -61,11 +73,15 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
   return (
     <Message align={isUser ? "end" : "start"}>
       <MessageAvatar>
-        <Avatar>
-          <AvatarFallback>
-            {isUser ? <UserIcon className="size-4" /> : <BotIcon className="size-4" />}
-          </AvatarFallback>
-        </Avatar>
+        {isUser ? (
+          <Avatar>
+            <AvatarFallback>
+              <UserIcon className="size-4" />
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <HiteshAvatar />
+        )}
       </MessageAvatar>
       <MessageContent>
         {msg.steps?.map((step, i) => <ToolMarker key={i} step={step} />)}
@@ -81,11 +97,7 @@ function TypingBubble() {
   return (
     <Message align="start">
       <MessageAvatar>
-        <Avatar>
-          <AvatarFallback>
-            <BotIcon className="size-4" />
-          </AvatarFallback>
-        </Avatar>
+        <HiteshAvatar />
       </MessageAvatar>
       <MessageContent>
         <Bubble variant="secondary">
@@ -135,11 +147,7 @@ function App() {
   return (
     <div className="mx-auto flex h-svh max-w-2xl flex-col">
       <header className="flex items-center gap-3 border-b border-border px-4 py-3">
-        <Avatar>
-          <AvatarFallback>
-            <BotIcon className="size-4" />
-          </AvatarFallback>
-        </Avatar>
+        <HiteshAvatar />
         <div>
           <p className="text-sm font-medium">Hitesh — Persona Agent</p>
           <p className="text-xs text-muted-foreground">Chai aur Code</p>
