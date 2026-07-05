@@ -1,0 +1,18 @@
+# Render Blueprint — deploys the persona API as a Docker web service.
+# Set the secret env vars in the Render dashboard (marked sync: false).
+services:
+  - type: web
+    name: persona-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: MODEL
+        value: openai/gpt-oss-120b
+      - key: YT_API_KEY
+        sync: false
