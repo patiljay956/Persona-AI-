@@ -6,10 +6,13 @@ const API = "https://www.googleapis.com/youtube/v3";
 
 async function get(path, params) {
   const url = new URL(`${API}/${path}`);
-  Object.entries({ ...params, key: YT_API_KEY }).forEach(([k, v]) => url.searchParams.set(k, v));
+  Object.entries({ ...params, key: YT_API_KEY }).forEach(([k, v]) =>
+    url.searchParams.set(k, v),
+  );
   const res = await fetch(url);
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error?.message || `YouTube API ${res.status}`);
+  if (!res.ok)
+    throw new Error(data?.error?.message || `YouTube API ${res.status}`);
   return data;
 }
 
@@ -26,7 +29,10 @@ function pickChannel(input = "") {
 const _cache = {};
 async function resolveChannel(handle) {
   if (_cache[handle]) return _cache[handle];
-  const data = await get("channels", { part: "contentDetails,snippet", forHandle: handle });
+  const data = await get("channels", {
+    part: "contentDetails,snippet",
+    forHandle: handle,
+  });
   const item = data.items?.[0];
   if (!item) throw new Error(`Channel not found for @${handle}`);
   _cache[handle] = {
@@ -43,7 +49,11 @@ const vidUrl = (id) => `https://youtu.be/${id}`;
 async function getLatestVideos({ channel } = {}) {
   const { handle } = pickChannel(channel);
   const { title, uploadsPlaylistId } = await resolveChannel(handle);
-  const data = await get("playlistItems", { part: "snippet", playlistId: uploadsPlaylistId, maxResults: 6 });
+  const data = await get("playlistItems", {
+    part: "snippet",
+    playlistId: uploadsPlaylistId,
+    maxResults: 6,
+  });
   const videos = (data.items || []).map((i) => ({
     title: i.snippet.title,
     url: vidUrl(i.snippet.resourceId.videoId),
@@ -57,9 +67,19 @@ async function searchVideos({ query } = {}) {
   const results = [];
   for (const { handle } of Object.values(CHANNELS)) {
     const { channelId, title } = await resolveChannel(handle);
-    const data = await get("search", { part: "snippet", type: "video", channelId, q: query, maxResults: 3 });
+    const data = await get("search", {
+      part: "snippet",
+      type: "video",
+      channelId,
+      q: query,
+      maxResults: 3,
+    });
     for (const i of data.items || []) {
-      results.push({ title: i.snippet.title, url: vidUrl(i.id.videoId), channel: title });
+      results.push({
+        title: i.snippet.title,
+        url: vidUrl(i.id.videoId),
+        channel: title,
+      });
     }
   }
   return JSON.stringify({ query, results });
@@ -69,7 +89,11 @@ async function searchVideos({ query } = {}) {
 async function getPlaylists({ channel } = {}) {
   const { handle } = pickChannel(channel);
   const { channelId, title } = await resolveChannel(handle);
-  const data = await get("playlists", { part: "snippet,contentDetails", channelId, maxResults: 12 });
+  const data = await get("playlists", {
+    part: "snippet,contentDetails",
+    channelId,
+    maxResults: 12,
+  });
   const playlists = (data.items || []).map((i) => ({
     title: i.snippet.title,
     videoCount: i.contentDetails.itemCount,
@@ -97,7 +121,9 @@ export const TOOL_SCHEMAS = [
         "Search Hitesh's and Piyush's YouTube videos by topic (e.g. 'docker', 'react'). Use whenever the user asks which video to watch on a topic.",
       parameters: {
         type: "object",
-        properties: { query: { type: "string", description: "Topic to search for" } },
+        properties: {
+          query: { type: "string", description: "Topic to search for" },
+        },
         required: ["query"],
       },
     },
@@ -110,7 +136,12 @@ export const TOOL_SCHEMAS = [
       parameters: {
         type: "object",
         properties: {
-          channel: { type: "string", enum: CHANNEL_ENUM, description: "chai=@chaiaurcode, lab=@HiteshCodeLab, piyush=@piyushgargdev" },
+          channel: {
+            type: "string",
+            enum: CHANNEL_ENUM,
+            description:
+              "chai=@chaiaurcode, lab=@HiteshCodeLab, piyush=@piyushgargdev",
+          },
         },
         required: ["channel"],
       },
@@ -123,7 +154,13 @@ export const TOOL_SCHEMAS = [
       description: "Get playlists / course series of a channel.",
       parameters: {
         type: "object",
-        properties: { channel: { type: "string", enum: CHANNEL_ENUM, description: "chai | lab | piyush" } },
+        properties: {
+          channel: {
+            type: "string",
+            enum: CHANNEL_ENUM,
+            description: "chai | lab | piyush",
+          },
+        },
         required: ["channel"],
       },
     },
@@ -132,7 +169,8 @@ export const TOOL_SCHEMAS = [
     type: "function",
     function: {
       name: "getLinks",
-      description: "Get Hitesh's and Piyush's portfolio, platforms, products, socials, and cohort links.",
+      description:
+        "Get Hitesh's and Piyush's portfolio, platforms, products, socials, and cohort links.",
       parameters: { type: "object", properties: {} },
     },
   },
