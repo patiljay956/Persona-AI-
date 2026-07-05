@@ -1,4 +1,4 @@
-# Render Blueprint — deploys the persona API as a Docker web service.
+# Render Blueprint — deploys the persona API (Docker) + chat UI (static site).
 # Set the secret env vars in the Render dashboard (marked sync: false).
 services:
   - type: web
@@ -16,3 +16,16 @@ services:
         value: openai/gpt-oss-120b
       - key: YT_API_KEY
         sync: false
+
+  - type: web
+    name: persona-web
+    runtime: static
+    rootDir: ./web
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      # Render has no dynamic public-URL reference, so this is hardcoded.
+      # Must match persona-api's actual onrender.com URL — fix after first deploy
+      # if Render assigned a different subdomain (name was taken).
+      - key: VITE_API_URL
+        value: https://persona-api.onrender.com
