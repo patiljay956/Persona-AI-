@@ -2,7 +2,7 @@
 
 A Hinglish AI agent that talks like **Hitesh Choudhary** (Chai aur Code) in a 1:1 chat, and can
 recommend real YouTube videos/playlists from **his two channels + Piyush Garg's** via the YouTube
-Data API. One agent core, two faces: CLI and an HTTP API (ready for a shadcn UI + Render deploy).
+Data API. One agent core, two faces: CLI and an HTTP API — plus a shadcn/ui chat frontend.
 
 Persona was built by analyzing 4 live-stream transcripts — see [docs/PERSONA.md](docs/PERSONA.md).
 
@@ -17,6 +17,7 @@ src/
   server.js    Express API: POST /api/chat, GET /api/health
 docs/PERSONA.md   persona analysis
 transcripts/      source live-stream transcripts
+web/              chat UI (Vite + React + shadcn/ui)
 Dockerfile, render.yaml   deploy
 ```
 
@@ -70,5 +71,14 @@ Push to a Git repo, then either:
   `/api/health`). Set `OPENAI_API_KEY` and `YT_API_KEY` as secrets in the dashboard.
 - **Manual:** New Web Service → Docker → add the same env vars.
 
-## Next
-- shadcn UI chat frontend calling `POST /api/chat`.
+## Run — Web UI
+Chat frontend in `web/` (Vite + React + Tailwind + shadcn/ui chat components: Message, Bubble,
+MessageScroller, Marker). Talks to the backend's `POST /api/chat` over plain fetch.
+
+```bash
+cd web
+npm install
+cp .env.example .env    # VITE_API_URL, defaults to http://localhost:3000
+npm run dev             # http://localhost:5173 — needs the backend (npm start) running too
+```
+Tool calls (e.g. `searchVideos`) show as a small marker above the reply; links in replies are clickable.
